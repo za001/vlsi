@@ -1,0 +1,169 @@
+HALF ADDER USING STRUCTURAL
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+
+
+entity fulladderstru is
+    Port ( a : in  STD_LOGIC;
+           b : in  STD_LOGIC;
+           s : out  STD_LOGIC;
+           c : out  STD_LOGIC);
+end fulladderstru;
+
+architecture Behavioral of fulladderstru is
+
+begin
+s<= a xor b;
+c<=a and b;
+
+end Behavioral;
+///////////orgate/////
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+
+entity orgate is
+    Port ( x : in  STD_LOGIC;
+           y : in  STD_LOGIC;
+           z : out  STD_LOGIC);
+end orgate;
+
+architecture Behavioral of orgate is
+
+begin
+z<=x or y;
+
+
+end Behavioral;
+
+//////////main adder///
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity mainadder is
+    Port ( p : in  STD_LOGIC;
+           q : in  STD_LOGIC;
+           r : in  STD_LOGIC;
+           sum : out  STD_LOGIC;
+           carry : out  STD_LOGIC);
+end mainadder;
+
+architecture Behavioral of mainadder is
+component fulladderstru is
+    Port ( a : in  STD_LOGIC;
+           b : in  STD_LOGIC;
+           s : out  STD_LOGIC;
+           c : out  STD_LOGIC);
+end component;
+
+component orgate is
+    Port ( x : in  STD_LOGIC;
+           y : in  STD_LOGIC;
+           z : out  STD_LOGIC);
+end component;
+signal sum1,carry1,carry2:std_logic;
+begin
+u0:fulladderstru port map(p,q,sum1,carry1);
+u1:fulladderstru port map(sum1,r,sum,carry2);
+u2:orgate port map(carry1,carry2,carry);
+end Behavioral;
+
+////tb/////////
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+ 
+-- Uncomment the following library declaration if using
+-- arithmetic functions with Signed or Unsigned values
+--USE ieee.numeric_std.ALL;
+ 
+ENTITY mainadder_tb IS
+END mainadder_tb;
+ 
+ARCHITECTURE behavior OF mainadder_tb IS 
+ 
+    -- Component Declaration for the Unit Under Test (UUT)
+ 
+    COMPONENT mainadder
+    PORT(
+         p : IN  std_logic;
+         q : IN  std_logic;
+         r : IN  std_logic;
+         sum : OUT  std_logic;
+         carry : OUT  std_logic
+        );
+    END COMPONENT;
+    
+
+   --Inputs
+   signal p : std_logic := '0';
+   signal q : std_logic := '0';
+   signal r : std_logic := '0';
+
+ 	--Outputs
+   signal sum : std_logic;
+   signal carry : std_logic;
+   -- No clocks detected in port list. Replace <clock> below with 
+   -- appropriate port name 
+ 
+  
+ 
+BEGIN
+ 
+	-- Instantiate the Unit Under Test (UUT)
+   uut: mainadder PORT MAP (
+          p => p,
+          q => q,
+          r => r,
+          sum => sum,
+          carry => carry
+        );
+
+  
+
+   -- Stimulus process
+   stim_proc: process
+   begin		
+      p<='0';
+		q<='0';
+		r<='0';
+		wait for 10 ns;
+		p<='0';
+		q<='0';
+		r<='1';
+		wait for 10 ns;
+		p<='0';
+		q<='1';
+		r<='0';
+		wait for 10 ns;
+		p<='0';
+		q<='1';
+		r<='1';
+		wait for 10 ns;
+		p<='1';
+		q<='0';
+		r<='0';
+		wait for 10 ns;
+		p<='1';
+		q<='0';
+		r<='1';
+		wait for 10 ns;
+		p<='1';
+		q<='1';
+		r<='0';
+		wait for 10 ns;
+		p<='1';
+		q<='1';
+		r<='1';
+		
+		wait for 10 ns;
+
+   end process;
+
+END;
+
+

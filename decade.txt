@@ -1,0 +1,92 @@
+DECADE COUNTER
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use ieee.std_logic_unsigned.all;
+
+entity decade is
+    Port ( clk : in  STD_LOGIC;
+           rst : in  STD_LOGIC;
+           y : out  STD_LOGIC_VECTOR (3 downto 0));
+end decade;
+
+architecture Behavioral of decade is
+
+begin
+process(clk,rst)
+ variable temp:std_logic_vector(3 downto 0);
+ begin
+ if rst='1' then
+    temp := "0000";
+	 y <= "0000";
+ elsif clk'event and clk='1' then
+   if temp < 9 then
+	temp := temp + 1;
+	else
+	temp := "0000";
+   end if;
+	y <= temp;
+	end if;
+	end process;
+
+end Behavioral;
+
+//////////tb//////////
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+ENTITY decade_tb IS
+END decade_tb;
+ 
+ARCHITECTURE behavior OF decade_tb IS 
+ 
+    -- Component Declaration for the Unit Under Test (UUT)
+ 
+    COMPONENT decade
+    PORT(
+         clk : IN  std_logic;
+         rst : IN  std_logic;
+         y : OUT  std_logic_vector(3 downto 0)
+        );
+    END COMPONENT;
+    
+
+   --Inputs
+   signal clk : std_logic := '0';
+   signal rst : std_logic := '0';
+
+ 	--Outputs
+   signal y : std_logic_vector(3 downto 0);
+
+   -- Clock period definitions
+   constant clk_period : time := 10 ns;
+ 
+BEGIN
+ 
+	-- Instantiate the Unit Under Test (UUT)
+   uut: decade PORT MAP (
+          clk => clk,
+          rst => rst,
+          y => y
+        );
+
+   -- Clock process definitions
+   clk_process :process
+   begin
+		clk <= '0';
+		wait for 10 ns;
+		clk <= '1';
+		wait for 10 ns;
+   end process;
+ 
+
+  stim_proc: process
+begin        
+   -- hold reset state for 100 ns.
+     rst <= '1';
+   wait for 20 ns;    
+    rst <= '0';
+   wait;
+end process;
+
+END;

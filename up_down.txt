@@ -1,0 +1,105 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+use IEEE.STD_LOGIC_unsigned.ALL;
+
+
+entity up_down is
+    Port ( clk : in  STD_LOGIC;
+           rst : in  STD_LOGIC;
+           up_dow : in  STD_LOGIC;
+           counter : out  STD_LOGIC_VECTOR (3 downto 0));
+end up_down;
+
+architecture Behavioral of up_down is
+signal counter_up:STD_LOGIC_VECTOR (3 downto 0);
+
+begin
+
+process(clk,rst)
+begin
+if rising_edge(clk) then
+if (rst='1') then
+counter_up<=x"0";
+elsif up_dow='1' then 
+counter_up<= counter_up-x"1";
+
+else
+ counter_up<= counter_up+x"1";
+
+end if;
+end if;
+end process;
+counter<= counter_up;
+
+
+end Behavioral;
+
+////////tb///////////
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+  
+ENTITY up_down_tb IS
+END up_down_tb;
+ 
+ARCHITECTURE behavior OF up_down_tb IS 
+ 
+    -- Component Declaration for the Unit Under Test (UUT)
+ 
+    COMPONENT up_down
+    PORT(
+         clk : IN  std_logic;
+         rst : IN  std_logic;
+         up_dow : IN  std_logic;
+         counter : OUT  std_logic_vector(3 downto 0)
+        );
+    END COMPONENT;
+    
+
+   --Inputs
+   signal clk : std_logic := '0';
+   signal rst : std_logic := '0';
+   signal up_dow : std_logic := '0';
+
+ 	--Outputs
+   signal counter : std_logic_vector(3 downto 0);
+
+   -- Clock period definitions
+   constant clk_period : time := 10 ns;
+ 
+BEGIN
+ 
+	-- Instantiate the Unit Under Test (UUT)
+   uut: up_down PORT MAP (
+          clk => clk,
+          rst => rst,
+          up_dow => up_dow,
+          counter => counter
+        );
+
+   -- Clock process definitions
+   clk_process :process
+   begin
+		clk <= '0';
+		wait for 10 ns;
+		clk <= '1';
+		wait for 10 ns;
+   end process;
+ 
+
+   -- Stimulus process
+   stim_proc: process
+   begin		
+	
+     rst <= '1';
+	  up_dow<='0';
+		wait for 20 ns;
+		rst <= '0';
+		wait for 300 ns;
+		 up_dow<='1';
+		 wait;
+		
+   end process;
+
+END;

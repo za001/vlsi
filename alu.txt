@@ -1,0 +1,97 @@
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+entity alu2 is
+    Port ( A : in  STD_LOGIC_VECTOR (3 downto 0);
+           B : in  STD_LOGIC_VECTOR (3 downto 0);
+           S : in  STD_LOGIC_VECTOR (2 downto 0);
+           Y : out  STD_LOGIC_VECTOR (3 downto 0));
+end alu2;
+
+architecture Behavioral of alu2 is
+
+begin
+process(A,B,S)
+begin
+ IF S="000" THEN
+ Y<= A AND B;
+ 
+ ELSIF  S="001" THEN
+ Y<= A NAND B;
+ 
+ ELSIF  S="010" THEN
+ Y<= A OR B;
+ 
+ ELSIF  S="011" THEN
+ Y<= A NOR B;
+ 
+ ELSIF  S="100" THEN
+ Y<= A XOR B;
+ 
+ ELSIF  S="101" THEN
+ Y<= A XNOR B;
+ 
+ ELSIF  S="110" THEN
+ Y<= NOT(A);
+ 
+ ELSIF  S="111" THEN
+ Y<= NOT(B);
+END IF ;
+END PROCESS;
+
+
+end Behavioral;
+
+////tb///////////////////////////////
+
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+use ieee.std_logic_unsigned.all;
+use ieee.numeric_std.all;
+ 
+ENTITY alu2_tb IS
+END alu2_tb;
+ 
+ARCHITECTURE behavior OF alu2_tb IS 
+ 
+    -- Component Declaration for the Unit Under Test (UUT)
+ 
+    COMPONENT alu2
+    PORT(
+         A : IN  std_logic_vector(3 downto 0);
+         B : IN  std_logic_vector(3 downto 0);
+         S : IN  std_logic_vector(2 downto 0);
+         Y : OUT  std_logic_vector(3 downto 0)
+        );
+    END COMPONENT;
+    
+
+   --Inputs
+   signal A : std_logic_vector(3 downto 0) := (others => '0');
+   signal B : std_logic_vector(3 downto 0) := (others => '0');
+   signal S : std_logic_vector(2 downto 0) := (others => '0');
+
+ 	--Outputs
+   signal Y : std_logic_vector(3 downto 0);
+  
+BEGIN
+ 
+	-- Instantiate the Unit Under Test (UUT)
+   uut: alu2 PORT MAP (
+          A => A,
+          B => B,
+          S => S,
+          Y => Y
+        );
+
+   
+ 
+
+   -- Stimulus process
+   stim_proc: process
+   begin		
+      s<= s+1;
+		wait for 100 ns;
+   end process;
+
+END;

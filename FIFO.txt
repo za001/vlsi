@@ -1,0 +1,159 @@
+Fifo
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.STD_LOGIC_ARITH.ALL;
+use IEEE.STD_LOGIC_UNSIGNED.ALL;
+
+entity RAM is
+    Port ( CLK : in std_logic;
+RST : in std_logic;
+RD : in std_logic;
+WR : in std_logic;
+Data_in : in std_logic_vector(7 downto 0);
+Addr : in std_logic_vector(1 downto 0);
+Data_Out : out std_logic_vector(7 downto 0));
+end RAM;
+
+architecture Behavioral of RAM is
+
+Type Mem is array (0 to 3) of std_logic_vector(7 downto 0);
+signal Reg : Mem:=(OTHERS=>(OTHERS=>'0'));
+begin
+	
+	process(RST,CLK,RD,WR,Data_in)
+	 begin
+	if(RST = '1') then
+	Reg<=(OTHERS=>(OTHERS=>'0'));
+	
+	elsif(rising_edge(CLK))then
+	if(WR = '1' AND RD = '0')then
+	    case Addr is
+
+	   when "00" =>Reg(0) <= Data_in;
+		when "01" =>Reg(1) <= Data_in;
+		when "10" =>Reg(2) <= Data_in;
+	   when others =>Reg(3) <= Data_in;
+	    end case;
+	
+	elsif(WR = '0' AND RD = '1')then
+	    case Addr is
+
+	   when "00" =>Data_Out<= Reg(0);
+		when "01" =>Data_Out<= Reg(1);
+		when "10" =>Data_Out<= Reg(2);
+		when others =>Data_Out<= Reg(3);
+	    end case;
+	   end if;
+	   end if;
+	end process;
+end Behavioral;
+ 
+TB
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+USE ieee.std_logic_unsigned.ALL;
+
+ENTITY RAM_8x8_TB IS
+END RAM_8x8_TB;
+
+ARCHITECTURE behavior OF RAM_8x8_TB IS 
+
+    -- Component Declaration for the Unit Under Test (UUT)
+
+    COMPONENT RAM
+PORT(
+CLK : IN  std_logic;
+RST : IN  std_logic;
+RD : IN  std_logic;
+WR : IN  std_logic;
+Data_in : IN  std_logic_vector(7 downto 0);
+Addr : IN  std_logic_vector(1 downto 0);
+Data_Out : OUT  std_logic_vector(7 downto 0)
+        );
+    END COMPONENT;
+
+  --Inputs
+   signal CLK :std_logic := '0';
+   signal RST :std_logic := '0';
+   signal RD :std_logic := '0';
+   signal WR :std_logic := '0';
+   signal Data_in :std_logic_vector(7 downto 0) := X"00";
+
+   signal Addr :std_logic_vector(1 downto 0) := (others => '1');
+--Outputs
+   signal Data_Out :std_logic_vector(7 downto 0);
+
+   -- Clock period definitions
+   constant CLK_period : time := 10 ns;
+
+BEGIN
+
+	-- Instantiate the Unit Under Test (UUT)
+uut: RAM PORT MAP (
+          CLK => CLK,
+          RST => RST,
+          RD => RD,
+          WR => WR,
+Data_in =>Data_in,
+Addr =>Addr,
+Data_Out =>Data_Out
+        );
+
+   -- Clock process definitions
+CLK_process :process
+   begin
+		CLK <= '0';
+		wait for CLK_period/2;
+		CLK <= '1';
+		wait for CLK_period/2;
+   end process;
+
+
+   -- Stimulus process
+rst_proc: process
+   begin	
+   wait for 80 ns;	
+	RST<='1';
+	wait for 20 ns;
+	RST<='0';
+	wait;
+   end process;
+	
+	addr_proc: process
+   begin	
+	Addr<=Addr+1;
+	wait for 10 ns;
+	end process;
+	
+	datain_proc: process
+   begin
+	Data_in<= X"41";
+	wait for 10 ns;
+	Data_in<= X"42";
+	wait for 10 ns;
+	Data_in<= X"43";
+	wait for 10 ns;
+	Data_in<= X"44";
+	wait for 10 ns;
+		
+	end process;
+	
+	rd_proc: process
+   begin		
+	RD<='0';
+	wait for 40 ns;
+	RD<='1';
+	wait for 120 ns;
+	RD<='0';
+	wait;
+	end process;
+	
+	wr_proc: process
+   begin		
+	WR<='1';
+	wait for 40 ns;
+	WR<='0';
+	wait;
+	end process;
+	
+END;

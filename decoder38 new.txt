@@ -1,0 +1,90 @@
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+
+entity decoder_38 is
+    Port ( A : in  STD_LOGIC_VECTOR (2 downto 0);
+           Y : out  STD_LOGIC_VECTOR (7 downto 0));
+end decoder_38;
+
+architecture decoder_38_arch of decoder_38 is
+begin
+process(A)
+begin
+case A is
+when "000" => Y <= "00000001"; 
+when "001" => Y <= "00000010";
+when "010" => Y <= "00000100";
+when "011" => Y <= "00001000";
+when "100" => Y <= "00010000";
+when "101" => Y <= "00100000";
+when "110" => Y <= "01000000";
+when others => Y <= "10000000";
+end case;
+end process;
+end decoder_38_arch;
+/////////////////////////
+
+TB/
+////////////////////////
+LIBRARY ieee;
+USE ieee.std_logic_1164.ALL;
+ 
+ 
+ENTITY decoder_38_tb IS
+END decoder_38_tb;
+ 
+ARCHITECTURE behavior OF decoder_38_tb IS 
+ 
+    -- Component Declaration for the Unit Under Test (UUT)
+ 
+    COMPONENT decoder_38
+    PORT(
+         A : IN  std_logic_vector(2 downto 0);
+         Y : OUT  std_logic_vector(7 downto 0)
+        );
+    END COMPONENT;
+    
+
+   --Inputs
+   signal A : std_logic_vector(2 downto 0) := "111";
+
+ 	--Outputs
+   signal Y : std_logic_vector(7 downto 0);
+   -- No clocks detected in port list. Replace <clock> below with 
+   -- appropriate port name 
+ 
+  
+ 
+BEGIN
+ 
+	-- Instantiate the Unit Under Test (UUT)
+   uut: decoder_38 PORT MAP (
+          A => A,
+          Y => Y
+        );
+
+ 
+
+   -- Stimulus process
+   stim_proc_A2: process
+   begin	
+    --wait for 100 ns;
+    A(2) <= NOT (A(2));
+     wait for 100 ns; 
+   end process;
+-- Stimulus process
+   stim_proc_A1: process
+   begin		
+       --wait for 50 ns;
+   A(1) <= NOT (A(1));
+	   wait for 50 ns;
+   end process;
+	-- Stimulus process
+   stim_proc_A0: process
+   begin		
+      --wait for 25 ns;
+	 A(0) <= NOT (A(0));
+	 wait for 25 ns;
+	
+   end process;
+END;
